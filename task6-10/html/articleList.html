@@ -1,0 +1,144 @@
+<div class="big-content" ng-controller="articleCtrl">
+    <div class="content">
+        <!--表单部分-->
+        <form action="">
+            <div class="row">
+                <div class="time col-md-4">
+                    <!--<div style="display:inline-block; min-height:290px;">-->
+                        <!--<div uib-datepicker ng-model="dt" class="well well-sm" datepicker-options="options"></div>-->
+                    <!--</div>-->
+                    <p class="time-p">发布时间</p>
+                    <input type="text"
+                           class="form-control form-control-a"
+                           uib-datepicker-popup="yyyy-MM-dd"
+                           is-open="startIsOpen"
+                           ng-model="startAt"
+                           clear-text="清空"
+                           close-text="关闭"
+                           current-text="今天"
+                           alt-input-formats="['yyyy-M!-d!']"
+                           datepicker-options="{showWeeks:false,maxDate:startMaxDate}"
+                           ng-click="startDate()">
+                </div>
+                <div class="time col-md-4">
+                    <p class="time-p-b">—</p>
+                    <input type="text"
+                           class="form-control form-control-a"
+                           uib-datepicker-popup="yyyy-MM-dd"
+                           is-open="endIsOpen"
+                           ng-model="endAt"
+                           clear-text="清空"
+                           close-text="关闭"
+                           current-text="今天"
+                           alt-input-formats="['yyyy-M!-d!']"
+                           datepicker-options="{showWeeks:false,maxDate:today,minDate:startAt}"
+                           ng-click="endDate()">
+
+                </div>
+                <div class="time col-md-4">
+                    <p class="time-p-s">类型</p>
+                    <!--<input class="time-input" type="text">-->
+                    <select class="form-control form-control-a" ng-model="type">
+                        <option ng-repeat="x in searchType" value="{{x.num}}">{{x.type}}</option>
+                    </select>
+                </div>
+                <div class="time col-md-4">
+                    <p class="time-p-s">状态</p>
+                    <!--<input class="time-input" type="text">-->
+                    <select class="form-control form-control-a" ng-model="status">
+                        <option ng-repeat="x in searchStatus" value="{{x.num}}">{{x.status}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 btn-p">
+                    <button type="button" class="btn-q" ng-click="clearAll()">清空</button>
+                    <button type="button" class="btn-s" ng-click="refreshList()">搜索</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!--面板部分-->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <b>Article列表</b>
+            <button type="button" class="btn-m" ui-sref="home.articleDetails">+新增</button>
+        </div>
+        <div class="panel-body overflow-x">
+            <table class="table">
+                <caption>基本的表格布局</caption>
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>图片</th>
+                    <th>标题</th>
+                    <th>类型</th>
+                    <th>创建时间</th>
+                    <th>修改时间</th>
+                    <th>创建者</th>
+                    <th>状态</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="x in articleList">
+                    <td>{{$index+1}}</td>
+                    <td><img class="list-img" src="{{x.img}}" alt="图片"></td>
+                    <td>{{x.title}}</td>
+                    <td>{{x.type | type }}</td>
+                    <td>
+                        {{x.createAt | date:"yyyy-MM-dd"}}<br/>
+                        {{x.createAt | date:"hh:mm:ss"}}
+                    </td>
+                    <td>
+                        {{x.updateAt | date: "yyyy-MM-dd"}}<br/>
+                        {{x.updateAt | date: "hh:mm:ss"}}
+                    </td>
+                    <td>{{x.author}}</td>
+                    <td>{{x.status | status}}</td>
+                    <td>
+                        <a class="a" href="" ng-click="changeLine()">{{x.status | line}}</a>
+                        <a class="a" href="" ui-sref="home.articleDetails({id:x.id})">编辑</a>
+                        <a class="a" href="" ng-click="deleteItem()">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!--面板部分结束-->
+    <!--分页模块开始-->
+    <ul class="separate-page">
+        <li>每页显示<input ng-model="size" onkeyup="value=value.replace(/\D/g,'')" type="text">条</li>
+        <li>
+            <ul uib-pagination=""
+                class="pagination"
+                total-items="total"
+                ng-model="page"
+                max-size="3"
+                boundary-links="true"
+                boundary-link-numbers="true"
+                first-text="首页"
+                last-text="末页"
+                previous-text="上一页"
+                next-text="下一页"
+                ng-change="refreshList()"
+            >
+                <!--total-items ：所有页面中的总页数-->
+                <!--first-text ：文本第一个按钮-->
+                <!--last-text ：文本最后一个按钮-->
+                <!--next-text ：文本为下一步按钮-->
+                <!--previous-text ：文本为上一步按钮-->
+                <!--max-size ：为分页大小数限制-->
+                <!--boundary-links ：是否显示第一/最后的按钮-->
+                <!--boundary-link-numbers ：是否显示第一页和最后一页的数字。
+                如果max-size小于页数，则必要时仍会显示第一页和最后一页的页码，其间有省略号。-->
+
+            </ul>
+        </li>
+        <li>去第<input onkeyup="value=value.replace(/\D/g,'')" type="text" ng-model="toPage">页</li>
+        <li><a class="btn btn-default" ng-click="refreshList()">确定</a></li>
+    </ul>
+    <!--分页模块结束-->
+</div>
